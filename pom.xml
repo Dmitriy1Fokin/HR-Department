@@ -61,6 +61,15 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <user>postgres</user>
+                    <password>postgres</password>
+                    <url>jdbc:postgresql://localhost:5432/hr_department</url>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
