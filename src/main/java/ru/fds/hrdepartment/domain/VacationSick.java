@@ -3,9 +3,8 @@ package ru.fds.hrdepartment.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.fds.hrdepartment.domain.helpertype.TypeOfAttendance;
+import ru.fds.hrdepartment.domain.helpertype.TypeOfVacationSick;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -24,7 +23,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString
 @Entity
 @Table(name = "vacation_sick")
 public class VacationSick {
@@ -50,6 +48,16 @@ public class VacationSick {
 
     @Column(name ="type_of_vacation_sick")
     @NotNull(message = "Обязательно для заполнения")
-    @Convert(converter = TypeOfAttendance.Converter.class)
-    private TypeOfAttendance typeOfAttendance;
+    @Convert(converter = TypeOfVacationSick.Converter.class)
+    private TypeOfVacationSick typeOfVacationSick;
+
+    @Override
+    public String toString() {
+        return "VacationSick{" +
+                "id=" + id +
+                ", dateStart=" + dateStart +
+                ", dateEnd=" + dateEnd +
+                ", typeOfVacationSick=" + typeOfVacationSick +
+                '}';
+    }
 }

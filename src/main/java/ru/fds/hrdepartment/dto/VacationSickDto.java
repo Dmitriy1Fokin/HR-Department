@@ -4,17 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import ru.fds.hrdepartment.domain.helpertype.TypeOfAttendance;
+import ru.fds.hrdepartment.domain.helpertype.TypeOfVacationSick;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Getter
-public class AttendanceSheetDto {
+public class VacationSickDto {
 
     private Long id;
 
@@ -22,12 +21,10 @@ public class AttendanceSheetDto {
     private Long employeeId;
 
     @NotNull(message = "Обязательно для заполнения")
-    private LocalDate workDate;
+    private LocalDate dateStart;
+
+    private LocalDate dateEnd;
 
     @NotNull(message = "Обязательно для заполнения")
-    @PositiveOrZero(message = "Значение должно быть больше или ровно нулю")
-    private Integer hourAtWork;
-
-    @NotNull(message = "Обязательно для заполнения")
-    private TypeOfAttendance typeOfAttendance;
+    private TypeOfVacationSick typeOfVacationSick;
 }
