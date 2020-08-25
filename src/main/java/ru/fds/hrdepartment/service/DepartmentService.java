@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface DepartmentService {
     Optional<Department> getDepartment(Long departmentId);
-    Integer getWorkHoursByDepartment(Long departmentId);
+    Integer getWorkHoursInDepartment(Long departmentId);
 }
