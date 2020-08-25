@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.fds.hrdepartment.common.converter.dto.impl.EmployeeDtoConverter;
 import ru.fds.hrdepartment.common.exception.NotFoundException;
 import ru.fds.hrdepartment.domain.Employee;
+import ru.fds.hrdepartment.domain.helpertype.TypeOfAttendance;
 import ru.fds.hrdepartment.dto.EmployeeDto;
 import ru.fds.hrdepartment.service.EmployeeService;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.Collection;
 
 
 @RestController
@@ -51,6 +54,11 @@ public class EmployeeController {
     public EmployeeDto insertEmployee(@Valid @RequestBody EmployeeDto employeeDto){
         Employee employee = employeeDtoConverter.toEntity(employeeDto);
         return employeeDtoConverter.toDto(employeeService.setEmployee(employee));
+    }
+
+    @GetMapping("/now/at_work")
+    public Collection<EmployeeDto> getEmployeesNowAtWork(){
+        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.AT_WORK));
     }
 
 }

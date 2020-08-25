@@ -6,11 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.fds.hrdepartment.domain.AttendanceSheet;
 import ru.fds.hrdepartment.domain.Employee;
 import ru.fds.hrdepartment.domain.VacationSick;
+import ru.fds.hrdepartment.domain.helpertype.TypeOfAttendance;
 import ru.fds.hrdepartment.repository.AttendanceSheetRepository;
 import ru.fds.hrdepartment.repository.EmployeeRepository;
 import ru.fds.hrdepartment.repository.VacationSickRepository;
 import ru.fds.hrdepartment.service.EmployeeService;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -67,5 +69,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee = employeeRepository.save(employee);
         log.info("insert new employee: {}", employee);
         return employee;
+    }
+
+    @Override
+    public Collection<Employee> getEmployeeByTypeOfAttendance(LocalDate date, TypeOfAttendance typeOfAttendance) {
+        log.debug("getEmployeeByTypeOfAttendance. date: {}, typeOfAttendance:{}", date, typeOfAttendance);
+        Collection<Employee> employees = employeeRepository.getEmployeeByTypeOfAttendance(date, typeOfAttendance);
+        log.debug("getEmployeeByTypeOfAttendance. employees: {}", employees);
+        return employees;
     }
 }

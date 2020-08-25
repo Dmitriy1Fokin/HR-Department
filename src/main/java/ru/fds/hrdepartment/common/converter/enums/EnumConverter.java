@@ -1,6 +1,7 @@
 package ru.fds.hrdepartment.common.converter.enums;
 
 import javax.persistence.AttributeConverter;
+import java.util.stream.Stream;
 
 public abstract class EnumConverter<T extends Enum<T>> implements AttributeConverter<T, String> {
     private final Class<T> clazz;
@@ -26,12 +27,9 @@ public abstract class EnumConverter<T extends Enum<T>> implements AttributeConve
 
         T[] enums = clazz.getEnumConstants();
 
-        for (T e : enums) {
-            if (e.name().equals(dbData)) {
-                return e;
-            }
-        }
-
-        throw new UnsupportedOperationException();
+        return Stream.of(enums)
+                .filter(t -> t.name().equals(dbData))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
