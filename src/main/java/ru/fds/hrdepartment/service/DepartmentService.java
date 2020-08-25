@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface DepartmentService {
     Optional<Department> getDepartment(Long departmentId);
     Integer getWorkHoursInDepartment(Long departmentId);
+    Department insertDepartment(Department department);
+    Department updateDepartment(Department department);
 }

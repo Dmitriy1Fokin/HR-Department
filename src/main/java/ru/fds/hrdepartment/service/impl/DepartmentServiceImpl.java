@@ -2,6 +2,7 @@ package ru.fds.hrdepartment.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.fds.hrdepartment.domain.Department;
 import ru.fds.hrdepartment.repository.AttendanceSheetRepository;
 import ru.fds.hrdepartment.repository.DepartmentRepository;
@@ -42,5 +43,21 @@ public class DepartmentServiceImpl implements DepartmentService {
         Integer count = attendanceSheetRepository.getWorkHoursInDepartment(department.get());
         log.debug("getWorkHoursInDepartment. count = {}", count);
         return count;
+    }
+
+    @Override
+    @Transactional
+    public Department insertDepartment(Department department) {
+        department = departmentRepository.save(department);
+        log.info("insert new department. department: {}", department);
+        return department;
+    }
+
+    @Override
+    @Transactional
+    public Department updateDepartment(Department department) {
+        department = departmentRepository.save(department);
+        log.info("update department. department: {}", department);
+        return department;
     }
 }

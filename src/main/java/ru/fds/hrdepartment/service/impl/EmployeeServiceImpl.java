@@ -72,6 +72,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
+    public Employee updateEmployee(Employee employee) {
+        employee = employeeRepository.save(employee);
+        log.info("update employee: {}", employee);
+        return employee;
+    }
+
+    @Override
     public Collection<Employee> getEmployeeByTypeOfAttendance(LocalDate date, TypeOfAttendance typeOfAttendance) {
         log.debug("getEmployeeByTypeOfAttendance. date: {}, typeOfAttendance:{}", date, typeOfAttendance);
         Collection<Employee> employees = employeeRepository.getEmployeeByTypeOfAttendance(date, typeOfAttendance);
