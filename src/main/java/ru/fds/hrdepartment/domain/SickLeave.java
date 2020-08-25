@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.fds.hrdepartment.domain.helpertype.TypeOfVacationSick;
+import ru.fds.hrdepartment.domain.helpertype.TypeOfSickLeave;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -24,12 +24,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(name = "vacation_sick")
-public class VacationSick {
+@Table(name = "sick_leave")
+public class SickLeave {
 
     @Id
-    @SequenceGenerator(name = "vacation_sick_id_seq", sequenceName = "vacation_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vacation_sick_id_seq")
+    @SequenceGenerator(name = "sick_id_seq", sequenceName = "sick_leave_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sick_id_seq")
     private Long id;
 
     @JoinColumn(name = "employee_id")
@@ -46,18 +46,18 @@ public class VacationSick {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateEnd;
 
-    @Column(name ="type_of_vacation_sick")
+    @Column(name ="type_of_vacation")
     @NotNull(message = "Обязательно для заполнения")
-    @Convert(converter = TypeOfVacationSick.Converter.class)
-    private TypeOfVacationSick typeOfVacationSick;
+    @Convert(converter = TypeOfSickLeave.Converter.class)
+    private TypeOfSickLeave typeOfSickLeave;
 
     @Override
     public String toString() {
-        return "VacationSick{" +
+        return "SickLeave{" +
                 "id=" + id +
                 ", dateStart=" + dateStart +
                 ", dateEnd=" + dateEnd +
-                ", typeOfVacationSick=" + typeOfVacationSick +
+                ", typeOfSickLeave=" + typeOfSickLeave +
                 '}';
     }
 }

@@ -37,7 +37,7 @@ public class AttendanceSheetController {
     @PostMapping("/new")
     public AttendanceSheetDto insertAttendance(@Valid @RequestBody AttendanceSheetDto attendanceSheetDto){
         AttendanceSheet attendanceSheet = attendanceDtoConverter.toEntity(attendanceSheetDto);
-        return attendanceDtoConverter.toDto(attendanceSheetService.setAttendanceSheet(attendanceSheet));
+        return attendanceDtoConverter.toDto(attendanceSheetService.insertAttendanceSheet(attendanceSheet));
     }
 
     @PutMapping("/update")

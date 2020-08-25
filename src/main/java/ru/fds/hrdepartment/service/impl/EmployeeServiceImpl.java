@@ -5,11 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fds.hrdepartment.domain.AttendanceSheet;
 import ru.fds.hrdepartment.domain.Employee;
-import ru.fds.hrdepartment.domain.VacationSick;
+import ru.fds.hrdepartment.domain.Vacation;
 import ru.fds.hrdepartment.domain.helpertype.TypeOfAttendance;
 import ru.fds.hrdepartment.repository.AttendanceSheetRepository;
 import ru.fds.hrdepartment.repository.EmployeeRepository;
-import ru.fds.hrdepartment.repository.VacationSickRepository;
+import ru.fds.hrdepartment.repository.VacationRepository;
 import ru.fds.hrdepartment.service.EmployeeService;
 
 import java.time.LocalDate;
@@ -22,14 +22,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final AttendanceSheetRepository attendanceSheetRepository;
-    private final VacationSickRepository vacationSickRepository;
+    private final VacationRepository vacationRepository;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                AttendanceSheetRepository attendanceSheetRepository,
-                               VacationSickRepository vacationSickRepository) {
+                               VacationRepository vacationRepository) {
         this.employeeRepository = employeeRepository;
         this.attendanceSheetRepository = attendanceSheetRepository;
-        this.vacationSickRepository = vacationSickRepository;
+        this.vacationRepository = vacationRepository;
     }
 
     @Override
@@ -52,8 +52,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             return;
         }
 
-        Collection<VacationSick> vacationSicks = vacationSickRepository.findAllByEmployee(employee.get());
-        vacationSickRepository.deleteAll(vacationSicks);
+        Collection<Vacation> vacations = vacationRepository.findAllByEmployee(employee.get());
+        vacationRepository.deleteAll(vacations);
 
         Collection<AttendanceSheet> attendanceSheets = attendanceSheetRepository.findAllByEmployee(employee.get());
         attendanceSheetRepository.deleteAll(attendanceSheets);
@@ -65,7 +65,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public Employee setEmployee(Employee employee) {
+    public Employee insertEmployee(Employee employee) {
         employee = employeeRepository.save(employee);
         log.info("insert new employee: {}", employee);
         return employee;

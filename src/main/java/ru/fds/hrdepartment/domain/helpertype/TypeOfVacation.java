@@ -2,14 +2,14 @@ package ru.fds.hrdepartment.domain.helpertype;
 
 import ru.fds.hrdepartment.common.converter.enums.EnumConverter;
 
-public enum TypeOfVacationSick {
-    ON_SICK_LEAVE,
+public enum TypeOfVacation {
+
     ANNUAL_VACATION,
     ADDITIONAL_VACATION;
 
-    public static class Converter extends EnumConverter<TypeOfVacationSick> {
+    public static class Converter extends EnumConverter<TypeOfVacation> {
         public Converter(){
-            super(TypeOfVacationSick.class);
+            super(TypeOfVacation.class);
         }
     }
 }

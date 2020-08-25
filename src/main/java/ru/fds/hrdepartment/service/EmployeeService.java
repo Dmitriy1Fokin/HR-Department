@@ -11,6 +11,6 @@ public interface EmployeeService {
     Optional<Employee> getEmployee(Long employeeId);
     Integer getWorkDaysByEmployee(Long employeeId);
     void deleteEmployee(Long employeeId);
-    Employee setEmployee(Employee employee);
+    Employee insertEmployee(Employee employee);
     Collection<Employee> getEmployeeByTypeOfAttendance(LocalDate date, TypeOfAttendance typeOfAttendance);
 }

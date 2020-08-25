@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface AttendanceSheetService {
     Optional<AttendanceSheet> getAttendance(Long attendanceId);
-    AttendanceSheet setAttendanceSheet(AttendanceSheet attendanceSheet);
+    AttendanceSheet insertAttendanceSheet(AttendanceSheet attendanceSheet);
     AttendanceSheet updateAttendanceSheet(AttendanceSheet attendanceSheet);
 }

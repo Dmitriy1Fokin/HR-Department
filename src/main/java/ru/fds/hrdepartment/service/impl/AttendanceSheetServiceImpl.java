@@ -27,7 +27,7 @@ public class AttendanceSheetServiceImpl implements AttendanceSheetService {
 
     @Override
     @Transactional
-    public AttendanceSheet setAttendanceSheet(AttendanceSheet attendanceSheet) {
+    public AttendanceSheet insertAttendanceSheet(AttendanceSheet attendanceSheet) {
         attendanceSheet = attendanceSheetRepository.save(attendanceSheet);
         log.info("insert attendanceSheet = {}", attendanceSheet);
         return attendanceSheet;

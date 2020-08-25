@@ -53,7 +53,7 @@ public class EmployeeController {
     @PostMapping("/new")
     public EmployeeDto insertEmployee(@Valid @RequestBody EmployeeDto employeeDto){
         Employee employee = employeeDtoConverter.toEntity(employeeDto);
-        return employeeDtoConverter.toDto(employeeService.setEmployee(employee));
+        return employeeDtoConverter.toDto(employeeService.insertEmployee(employee));
     }
 
     @GetMapping("/now/at_work")
