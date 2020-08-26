@@ -5,7 +5,7 @@ import ru.fds.hrdepartment.common.converter.enums.EnumConverter;
 public enum TypeOfAttendance {
 
     AT_WORK,
-    ABSENTEEISM,
+    ABSENCE,
     ON_SICK_LEAVE,
     ON_VACATION;
 

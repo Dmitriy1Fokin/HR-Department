@@ -1,5 +1,6 @@
 package ru.fds.hrdepartment.controller;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,4 +69,38 @@ public class EmployeeController {
         return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.AT_WORK));
     }
 
+    @GetMapping("/now/absence")
+    public Collection<EmployeeDto> getEmployeesNowInAbsence(){
+        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.ABSENCE));
+    }
+
+    @GetMapping("/now/on_sick_leave")
+    public Collection<EmployeeDto> getEmployeesNowOnSickLeave(){
+        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.ON_SICK_LEAVE));
+    }
+
+    @GetMapping("/now/on_vacation")
+    public Collection<EmployeeDto> getEmployeesNowOnVacation(){
+        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.ON_VACATION));
+    }
+
+    @GetMapping("/date/at_work")
+    public Collection<EmployeeDto> getEmployeesDateAtWork(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(date, TypeOfAttendance.AT_WORK));
+    }
+
+    @GetMapping("/date/absence")
+    public Collection<EmployeeDto> getEmployeesDateInAbsence(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(date, TypeOfAttendance.ABSENCE));
+    }
+
+    @GetMapping("/date/on_sick_leave")
+    public Collection<EmployeeDto> getEmployeesDateOnSickLeave(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(date, TypeOfAttendance.ON_SICK_LEAVE));
+    }
+
+    @GetMapping("/date/on_vacation")
+    public Collection<EmployeeDto> getEmployeesDateOnVacation(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(date, TypeOfAttendance.ON_VACATION));
+    }
 }
