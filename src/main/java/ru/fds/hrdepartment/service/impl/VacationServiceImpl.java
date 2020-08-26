@@ -4,11 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.fds.hrdepartment.common.exception.ConditionFailException;
+import ru.fds.hrdepartment.domain.Employee;
 import ru.fds.hrdepartment.domain.Vacation;
 import ru.fds.hrdepartment.repository.EmployeeRepository;
 import ru.fds.hrdepartment.repository.VacationRepository;
 import ru.fds.hrdepartment.service.VacationService;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Optional;
 
 @Slf4j
@@ -33,9 +37,26 @@ public class VacationServiceImpl implements VacationService {
     @Override
     @Transactional
     public Vacation insertVacation(Vacation vacation) {
-        vacation = vacationRepository.save(vacation);
-        log.info("insertVacation. vacation: {}", vacation);
-        return vacation;
+        Collection<Employee> employees = employeeRepository
+                .findAllByDepartmentAndPosition(vacation.getEmployee().getDepartment(),
+                        vacation.getEmployee().getPosition());
+
+        if(isCanLeaveInVacation(employees)){
+            vacation = vacationRepository.save(vacation);
+            log.info("insertVacation. vacation: {}", vacation);
+            return vacation;
+        }else{
+            throw new ConditionFailException("Employee can't leave because there must be 1 or more people left in the Department in this position");
+        }
+    }
+
+    private boolean isCanLeaveInVacation(Collection<Employee> employeesInDepartmentInThisPosition){
+        if(employeesInDepartmentInThisPosition.size() < 2){
+            return false;
+        }else{
+            int countEmp = employeeRepository.countOfEmployeesInVacation(employeesInDepartmentInThisPosition, LocalDate.now());
+            return employeesInDepartmentInThisPosition.size() - countEmp >= 2;
+        }
     }
 
     @Override
@@ -50,12 +71,9 @@ public class VacationServiceImpl implements VacationService {
     public Optional<Vacation> getLastVacationByEmployee(Long employeeId) {
         log.debug("getLastVacationByEmployee. employeeId: {}", employeeId);
 
-        Optional<Vacation> vacation;
-        employeeRepository.findById(employeeId)
-                .map(employee ->
-                        vacationRepository.findFirstByEmployee(employee,
-                                Sort.by(Sort.Direction.DESC, "dateStart")))
-                .orElse(vacation = Optional.empty());
+        Optional<Vacation> vacation = employeeRepository.findById(employeeId)
+                .flatMap(employee -> vacationRepository
+                        .findFirstByEmployee(employee, Sort.by(Sort.Direction.DESC, "dateStart")));
 
         log.debug("getLastVacationByEmployee. vacation: {}", vacation);
 

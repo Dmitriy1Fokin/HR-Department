@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
@@ -55,12 +56,21 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<Object> handleCustomException(Exception ex){
+    protected ResponseEntity<Object> handleNotFoundException(Exception ex){
         Map<String, Object> body = new LinkedHashMap<>();
         body.put(TIMESTAMP, LocalDateTime.now());
         body.put(STATUS, HttpStatus.NOT_FOUND.value());
         body.put(MESSAGE, ex.getMessage());
         return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({PersistenceException.class, ConditionFailException.class})
+    protected ResponseEntity<Object> handleException(Exception ex){
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put(TIMESTAMP, LocalDateTime.now());
+        body.put(STATUS, HttpStatus.CONFLICT.value());
+        body.put(MESSAGE, ex.getMessage());
+        return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
