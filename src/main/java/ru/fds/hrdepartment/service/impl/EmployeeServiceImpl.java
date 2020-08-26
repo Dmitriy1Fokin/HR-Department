@@ -3,12 +3,11 @@ package ru.fds.hrdepartment.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.fds.hrdepartment.domain.AttendanceSheet;
 import ru.fds.hrdepartment.domain.Employee;
-import ru.fds.hrdepartment.domain.Vacation;
 import ru.fds.hrdepartment.domain.helpertype.TypeOfAttendance;
 import ru.fds.hrdepartment.repository.AttendanceSheetRepository;
 import ru.fds.hrdepartment.repository.EmployeeRepository;
+import ru.fds.hrdepartment.repository.SickLeaveRepository;
 import ru.fds.hrdepartment.repository.VacationRepository;
 import ru.fds.hrdepartment.service.EmployeeService;
 
@@ -23,13 +22,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final AttendanceSheetRepository attendanceSheetRepository;
     private final VacationRepository vacationRepository;
+    private final SickLeaveRepository sickLeaveRepository;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                AttendanceSheetRepository attendanceSheetRepository,
-                               VacationRepository vacationRepository) {
+                               VacationRepository vacationRepository,
+                               SickLeaveRepository sickLeaveRepository) {
         this.employeeRepository = employeeRepository;
         this.attendanceSheetRepository = attendanceSheetRepository;
         this.vacationRepository = vacationRepository;
+        this.sickLeaveRepository = sickLeaveRepository;
     }
 
     @Override
@@ -47,20 +49,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void deleteEmployee(Long employeeId) {
-        Optional<Employee> employee = getEmployee(employeeId);
-        if(employee.isEmpty()){
-            return;
-        }
+        getEmployee(employeeId).ifPresent(employee -> {
+            vacationRepository.deleteAll(vacationRepository.findAllByEmployee(employee));
+            sickLeaveRepository.deleteAll(sickLeaveRepository.findAllByEmployee(employee));
+            attendanceSheetRepository.deleteAll(attendanceSheetRepository.findAllByEmployee(employee));
+            employeeRepository.delete(employee);
+        });
 
-        Collection<Vacation> vacations = vacationRepository.findAllByEmployee(employee.get());
-        vacationRepository.deleteAll(vacations);
-
-        Collection<AttendanceSheet> attendanceSheets = attendanceSheetRepository.findAllByEmployee(employee.get());
-        attendanceSheetRepository.deleteAll(attendanceSheets);
-
-        employeeRepository.delete(employee.get());
-
-        log.info("delete employee with id = {}", employeeId);
+        log.info("deleted employee with id = {}", employeeId);
     }
 
     @Override

@@ -32,16 +32,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Integer getWorkHoursInDepartment(Long departmentId) {
-        log.debug("getWorkHoursInDepartment. departmentId = {}", departmentId);
+        int count = departmentRepository.findById(departmentId)
+                .map(attendanceSheetRepository::getWorkHoursInDepartment)
+                .orElse(0);
 
-        Optional<Department> department = departmentRepository.findById(departmentId);
-        if(department.isEmpty()){
-            log.debug("getWorkHoursInDepartment. count = 0");
-            return 0;
-        }
-
-        Integer count = attendanceSheetRepository.getWorkHoursInDepartment(department.get());
         log.debug("getWorkHoursInDepartment. count = {}", count);
+
         return count;
     }
 
