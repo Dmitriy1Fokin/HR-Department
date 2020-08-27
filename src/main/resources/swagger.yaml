@@ -1,0 +1,1198 @@
+swagger: '2.0'
+info:
+  description: Api Documentation
+  version: '1.0'
+  title: Api Documentation
+  termsOfService: 'urn:tos'
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0'
+host: 'localhost:8080'
+basePath: /
+tags:
+  - name: attendance-sheet-controller
+    description: Attendance Sheet Controller
+  - name: basic-error-controller
+    description: Basic Error Controller
+  - name: department-controller
+    description: Department Controller
+  - name: employee-controller
+    description: Employee Controller
+  - name: position-controller
+    description: Position Controller
+  - name: sick-leave-controller
+    description: Sick Leave Controller
+  - name: vacation-controller
+    description: Vacation Controller
+paths:
+  /attendance/new:
+    post:
+      tags:
+        - attendance-sheet-controller
+      summary: insertAttendance
+      operationId: insertAttendanceUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: attendanceSheetDto
+          description: attendanceSheetDto
+          required: true
+          schema:
+            $ref: '#/definitions/AttendanceSheetDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AttendanceSheetDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /attendance/update:
+    put:
+      tags:
+        - attendance-sheet-controller
+      summary: updateAttendance
+      operationId: updateAttendanceUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: attendanceSheetDto
+          description: attendanceSheetDto
+          required: true
+          schema:
+            $ref: '#/definitions/AttendanceSheetDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AttendanceSheetDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/attendance/{attendanceId}':
+    get:
+      tags:
+        - attendance-sheet-controller
+      summary: getAttendance
+      operationId: getAttendanceUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: attendanceId
+          in: path
+          description: attendanceId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AttendanceSheetDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /dep/new:
+    post:
+      tags:
+        - department-controller
+      summary: insertDepartment
+      operationId: insertDepartmentUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: departmentDto
+          description: departmentDto
+          required: true
+          schema:
+            $ref: '#/definitions/DepartmentDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DepartmentDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /dep/total_hour:
+    get:
+      tags:
+        - department-controller
+      summary: getWorkHoursInDepartment
+      operationId: getWorkHoursInDepartmentUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: departmentId
+          in: query
+          description: departmentId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+            format: int32
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /dep/update:
+    put:
+      tags:
+        - department-controller
+      summary: updateDepartment
+      operationId: updateDepartmentUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: departmentDto
+          description: departmentDto
+          required: true
+          schema:
+            $ref: '#/definitions/DepartmentDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DepartmentDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/all_days:
+    get:
+      tags:
+        - employee-controller
+      summary: getWorkDaysByEmployee
+      operationId: getWorkDaysByEmployeeUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: employeeId
+          in: query
+          description: employeeId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+            format: int32
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/date/absence:
+    get:
+      tags:
+        - employee-controller
+      summary: getEmployeesDateInAbsence
+      operationId: getEmployeesDateInAbsenceUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: date
+          in: query
+          description: date
+          required: true
+          type: string
+          format: date
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/date/at_work:
+    get:
+      tags:
+        - employee-controller
+      summary: getEmployeesDateAtWork
+      operationId: getEmployeesDateAtWorkUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: date
+          in: query
+          description: date
+          required: true
+          type: string
+          format: date
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/date/on_sick_leave:
+    get:
+      tags:
+        - employee-controller
+      summary: getEmployeesDateOnSickLeave
+      operationId: getEmployeesDateOnSickLeaveUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: date
+          in: query
+          description: date
+          required: true
+          type: string
+          format: date
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/date/on_vacation:
+    get:
+      tags:
+        - employee-controller
+      summary: getEmployeesDateOnVacation
+      operationId: getEmployeesDateOnVacationUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: date
+          in: query
+          description: date
+          required: true
+          type: string
+          format: date
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/delete:
+    delete:
+      tags:
+        - employee-controller
+      summary: deleteEmployee
+      operationId: deleteEmployeeUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: employeeId
+          in: query
+          description: employeeId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /emp/new:
+    post:
+      tags:
+        - employee-controller
+      summary: insertEmployee
+      operationId: insertEmployeeUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: employeeDto
+          description: employeeDto
+          required: true
+          schema:
+            $ref: '#/definitions/EmployeeDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EmployeeDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/now/absence:
+    get:
+      tags:
+        - employee-controller
+      summary: getEmployeesNowInAbsence
+      operationId: getEmployeesNowInAbsenceUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/now/at_work:
+    get:
+      tags:
+        - employee-controller
+      summary: getEmployeesNowAtWork
+      operationId: getEmployeesNowAtWorkUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/now/on_sick_leave:
+    get:
+      tags:
+        - employee-controller
+      summary: getEmployeesNowOnSickLeave
+      operationId: getEmployeesNowOnSickLeaveUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/now/on_vacation:
+    get:
+      tags:
+        - employee-controller
+      summary: getEmployeesNowOnVacation
+      operationId: getEmployeesNowOnVacationUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /emp/update:
+    put:
+      tags:
+        - employee-controller
+      summary: updateEmployee
+      operationId: updateEmployeeUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: employeeDto
+          description: employeeDto
+          required: true
+          schema:
+            $ref: '#/definitions/EmployeeDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EmployeeDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/emp/{employeeId}':
+    get:
+      tags:
+        - employee-controller
+      summary: getEmployee
+      operationId: getEmployeeUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: employeeId
+          in: path
+          description: employeeId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EmployeeDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /error:
+    get:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingGET
+      produces:
+        - text/html
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ModelAndView'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    head:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingHEAD
+      consumes:
+        - application/json
+      produces:
+        - text/html
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ModelAndView'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - text/html
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ModelAndView'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - text/html
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ModelAndView'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingDELETE
+      produces:
+        - text/html
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ModelAndView'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    options:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingOPTIONS
+      consumes:
+        - application/json
+      produces:
+        - text/html
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ModelAndView'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    patch:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingPATCH
+      consumes:
+        - application/json
+      produces:
+        - text/html
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ModelAndView'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /position/new:
+    post:
+      tags:
+        - position-controller
+      summary: insertPosition
+      operationId: insertPositionUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: positionDto
+          description: positionDto
+          required: true
+          schema:
+            $ref: '#/definitions/PositionDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PositionDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /position/update:
+    put:
+      tags:
+        - position-controller
+      summary: updatePosition
+      operationId: updatePositionUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: positionDto
+          description: positionDto
+          required: true
+          schema:
+            $ref: '#/definitions/PositionDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PositionDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/position/{positionId}':
+    get:
+      tags:
+        - position-controller
+      summary: getPosition
+      operationId: getPositionUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: positionId
+          in: path
+          description: positionId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PositionDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sick/new:
+    post:
+      tags:
+        - sick-leave-controller
+      summary: insertSickLeave
+      operationId: insertSickLeaveUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: sickLeaveDto
+          description: sickLeaveDto
+          required: true
+          schema:
+            $ref: '#/definitions/SickLeaveDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SickLeaveDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /sick/update:
+    put:
+      tags:
+        - sick-leave-controller
+      summary: updateSickLeave
+      operationId: updateSickLeaveUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: sickLeaveDto
+          description: sickLeaveDto
+          required: true
+          schema:
+            $ref: '#/definitions/SickLeaveDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SickLeaveDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/sick/{sickId}':
+    get:
+      tags:
+        - sick-leave-controller
+      summary: getSickLeave
+      operationId: getSickLeaveUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: sickId
+          in: path
+          description: sickId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SickLeaveDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /vacation/employee_last:
+    get:
+      tags:
+        - vacation-controller
+      summary: getLastVacationByEmployee
+      operationId: getLastVacationByEmployeeUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: employeeId
+          in: query
+          description: employeeId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/VacationDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /vacation/new:
+    post:
+      tags:
+        - vacation-controller
+      summary: insertVacation
+      operationId: insertVacationUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: vacationDto
+          description: vacationDto
+          required: true
+          schema:
+            $ref: '#/definitions/VacationDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/VacationDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /vacation/update:
+    put:
+      tags:
+        - vacation-controller
+      summary: updateVacation
+      operationId: updateVacationUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: vacationDto
+          description: vacationDto
+          required: true
+          schema:
+            $ref: '#/definitions/VacationDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/VacationDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/vacation/{vacationId}':
+    get:
+      tags:
+        - vacation-controller
+      summary: getVacation
+      operationId: getVacationUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: vacationId
+          in: path
+          description: vacationId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/VacationDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+definitions:
+  AttendanceSheetDto:
+    type: object
+    properties:
+      employeeId:
+        type: integer
+        format: int64
+      hourAtWork:
+        type: integer
+        format: int32
+      id:
+        type: integer
+        format: int64
+      typeOfAttendance:
+        type: string
+        enum:
+          - AT_WORK
+          - ABSENCE
+          - ON_SICK_LEAVE
+          - ON_VACATION
+      workDate:
+        type: string
+        format: date
+    title: AttendanceSheetDto
+  DepartmentDto:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    title: DepartmentDto
+  EmployeeDto:
+    type: object
+    properties:
+      dateIn:
+        type: string
+        format: date
+      dateOut:
+        type: string
+        format: date
+      departmentId:
+        type: integer
+        format: int64
+      firstName:
+        type: string
+      id:
+        type: integer
+        format: int64
+      lastName:
+        type: string
+      positionId:
+        type: integer
+        format: int64
+    title: EmployeeDto
+  ModelAndView:
+    type: object
+    properties:
+      empty:
+        type: boolean
+      model:
+        type: object
+      modelMap:
+        type: object
+        additionalProperties:
+          type: object
+      reference:
+        type: boolean
+      status:
+        type: string
+        enum:
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
+      view:
+        $ref: '#/definitions/View'
+      viewName:
+        type: string
+    title: ModelAndView
+  PositionDto:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    title: PositionDto
+  SickLeaveDto:
+    type: object
+    properties:
+      dateEnd:
+        type: string
+        format: date
+      dateStart:
+        type: string
+        format: date
+      employeeId:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      typeOfSickLeave:
+        type: string
+        enum:
+          - BASIC
+          - FAMILY_MEMBER
+          - CHILD
+    title: SickLeaveDto
+  VacationDto:
+    type: object
+    properties:
+      dateEnd:
+        type: string
+        format: date
+      dateStart:
+        type: string
+        format: date
+      employeeId:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      typeOfVacation:
+        type: string
+        enum:
+          - ANNUAL_VACATION
+          - ADDITIONAL_VACATION
+    title: VacationDto
+  View:
+    type: object
+    properties:
+      contentType:
+        type: string
+    title: View
