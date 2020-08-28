@@ -1,5 +1,7 @@
 package ru.fds.hrdepartment.controller;
 
+import io.swagger.api.PositionApi;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/position")
-public class PositionController {
+public class PositionController implements PositionApi {
 
     private final PositionService positionService;
     private final PositionDtoConverter positionDtoConverter;
@@ -28,21 +30,24 @@ public class PositionController {
         this.positionDtoConverter = positionDtoConverter;
     }
 
+    @Override
     @GetMapping("{positionId}")
-    public PositionDto getPosition(@PathVariable("positionId") Long positionId){
-        return positionDtoConverter.toDto(positionService
-                .getPosition(positionId).orElseThrow(() -> new NotFoundException("Position not found")));
+    public ResponseEntity<PositionDto> getPosition(@PathVariable("positionId") Long positionId){
+        return ResponseEntity.ok(positionDtoConverter.toDto(positionService
+                .getPosition(positionId).orElseThrow(() -> new NotFoundException("Position not found"))));
     }
 
+    @Override
     @PostMapping("/new")
-    public PositionDto insertPosition(@Valid @RequestBody PositionDto positionDto){
+    public ResponseEntity<PositionDto> insertPosition(@Valid @RequestBody PositionDto positionDto){
         Position position = positionDtoConverter.toEntity(positionDto);
-        return positionDtoConverter.toDto(positionService.insertPosition(position));
+        return ResponseEntity.ok(positionDtoConverter.toDto(positionService.insertPosition(position)));
     }
 
+    @Override
     @PutMapping("/update")
-    public PositionDto updatePosition(@Valid @RequestBody PositionDto positionDto){
+    public ResponseEntity<PositionDto> updatePosition(@Valid @RequestBody PositionDto positionDto){
         Position position = positionDtoConverter.toEntity(positionDto);
-        return positionDtoConverter.toDto(positionService.updatePosition(position));
+        return ResponseEntity.ok(positionDtoConverter.toDto(positionService.updatePosition(position)));
     }
 }

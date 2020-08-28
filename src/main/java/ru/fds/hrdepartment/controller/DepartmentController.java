@@ -1,5 +1,7 @@
 package ru.fds.hrdepartment.controller;
 
+import io.swagger.api.DepApi;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,7 +18,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/dep")
-public class DepartmentController {
+public class DepartmentController implements DepApi {
 
     private final DepartmentService departmentService;
     private final DepartmentDtoConverter departmentDtoConverter;
@@ -27,21 +29,24 @@ public class DepartmentController {
         this.departmentDtoConverter = departmentDtoConverter;
     }
 
+    @Override
     @GetMapping("/total_hour")
-    public Integer getWorkHoursInDepartment(@RequestParam("departmentId") Long departmentId){
-        return departmentService.getWorkHoursInDepartment(departmentId);
+    public ResponseEntity<Integer> getWorkHoursInDepartment(@RequestParam("departmentId") Long departmentId){
+        return ResponseEntity.ok(departmentService.getWorkHoursInDepartment(departmentId));
     }
 
+    @Override
     @PostMapping("/new")
-    public DepartmentDto insertDepartment(@Valid @RequestBody DepartmentDto departmentDto){
+    public ResponseEntity<DepartmentDto> insertDepartment(@Valid @RequestBody DepartmentDto departmentDto){
         Department department = departmentDtoConverter.toEntity(departmentDto);
-        return departmentDtoConverter.toDto(departmentService.insertDepartment(department));
+        return ResponseEntity.ok(departmentDtoConverter.toDto(departmentService.insertDepartment(department)));
     }
 
+    @Override
     @PutMapping("/update")
-    public DepartmentDto updateDepartment(@Valid @RequestBody DepartmentDto departmentDto){
+    public ResponseEntity<DepartmentDto> updateDepartment(@Valid @RequestBody DepartmentDto departmentDto){
         Department department = departmentDtoConverter.toEntity(departmentDto);
-        return departmentDtoConverter.toDto(departmentService.updateDepartment(department));
+        return ResponseEntity.ok(departmentDtoConverter.toDto(departmentService.updateDepartment(department)));
     }
 
 }

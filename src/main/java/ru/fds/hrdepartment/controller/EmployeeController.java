@@ -1,6 +1,9 @@
 package ru.fds.hrdepartment.controller;
 
+import io.swagger.api.EmpApi;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,12 +22,14 @@ import ru.fds.hrdepartment.service.EmployeeService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.Collection;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
 
 @RestController
 @RequestMapping("/emp")
-public class EmployeeController {
+public class EmployeeController implements EmpApi {
 
     private final EmployeeService employeeService;
     private final EmployeeDtoConverter employeeDtoConverter;
@@ -35,72 +40,98 @@ public class EmployeeController {
         this.employeeDtoConverter = employeeDtoConverter;
     }
 
+    @Override
     @GetMapping("/{employeeId}")
-    public EmployeeDto getEmployee(@PathVariable("employeeId") Long employeeId){
-        return employeeDtoConverter.toDto(employeeService
-                .getEmployee(employeeId).orElseThrow(()-> new NotFoundException("Employee not found")));
+    public ResponseEntity<EmployeeDto> getEmployee(@PathVariable("employeeId") Long employeeId){
+        return ResponseEntity.ok(employeeDtoConverter.toDto(employeeService
+                .getEmployee(employeeId).orElseThrow(()-> new NotFoundException("Employee not found"))));
     }
 
 
+    @Override
     @GetMapping("/all_days")
-    public Integer getWorkDaysByEmployee(@RequestParam("employeeId") Long employeeId){
-        return employeeService.getWorkDaysByEmployee(employeeId);
+    public ResponseEntity<Integer> getWorkDaysByEmployee(@RequestParam("employeeId") Long employeeId){
+        return ResponseEntity.ok(employeeService.getWorkDaysByEmployee(employeeId));
     }
 
+    @Override
     @DeleteMapping("/delete")
-    public void deleteEmployee(@RequestParam("employeeId") Long employeeId){
+    public ResponseEntity<Void> deleteEmployee(@RequestParam("employeeId") Long employeeId){
         employeeService.deleteEmployee(employeeId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
     @PostMapping("/new")
-    public EmployeeDto insertEmployee(@Valid @RequestBody EmployeeDto employeeDto){
+    public ResponseEntity<EmployeeDto> insertEmployee(@Valid @RequestBody EmployeeDto employeeDto){
         Employee employee = employeeDtoConverter.toEntity(employeeDto);
-        return employeeDtoConverter.toDto(employeeService.insertEmployee(employee));
+        return ResponseEntity.ok(employeeDtoConverter.toDto(employeeService.insertEmployee(employee)));
     }
 
+    @Override
     @PutMapping("/update")
-    public EmployeeDto updateEmployee(@Valid @RequestBody EmployeeDto employeeDto){
+    public ResponseEntity<EmployeeDto> updateEmployee(@Valid @RequestBody EmployeeDto employeeDto){
         Employee employee = employeeDtoConverter.toEntity(employeeDto);
-        return employeeDtoConverter.toDto(employeeService.updateEmployee(employee));
+        return ResponseEntity.ok(employeeDtoConverter.toDto(employeeService.updateEmployee(employee)));
     }
 
+    @Override
     @GetMapping("/now/at_work")
-    public Collection<EmployeeDto> getEmployeesNowAtWork(){
-        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.AT_WORK));
+    public ResponseEntity<List<EmployeeDto>> getEmployeesNowAtWork(){
+        return ResponseEntity.ok(List.copyOf(employeeDtoConverter
+                .toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.AT_WORK))));
     }
 
+    @Override
     @GetMapping("/now/absence")
-    public Collection<EmployeeDto> getEmployeesNowInAbsence(){
-        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.ABSENCE));
+    public ResponseEntity<List<EmployeeDto>> getEmployeesNowInAbsence(){
+        return ResponseEntity.ok(List.copyOf(employeeDtoConverter
+                .toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.ABSENCE))));
     }
 
+    @Override
     @GetMapping("/now/on_sick_leave")
-    public Collection<EmployeeDto> getEmployeesNowOnSickLeave(){
-        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.ON_SICK_LEAVE));
+    public ResponseEntity<List<EmployeeDto>> getEmployeesNowOnSickLeave(){
+        return ResponseEntity.ok(List.copyOf(employeeDtoConverter
+                .toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.ON_SICK_LEAVE))));
     }
 
+    @Override
     @GetMapping("/now/on_vacation")
-    public Collection<EmployeeDto> getEmployeesNowOnVacation(){
-        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.ON_VACATION));
+    public ResponseEntity<List<EmployeeDto>> getEmployeesNowOnVacation(){
+        return ResponseEntity.ok(List.copyOf(employeeDtoConverter
+                .toDto(employeeService.getEmployeeByTypeOfAttendance(LocalDate.now(), TypeOfAttendance.ON_VACATION))));
     }
 
+    @Override
     @GetMapping("/date/at_work")
-    public Collection<EmployeeDto> getEmployeesDateAtWork(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(date, TypeOfAttendance.AT_WORK));
+    public ResponseEntity<List<EmployeeDto>> getEmployeesDateAtWork(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
+        return ResponseEntity.ok(List.copyOf(employeeDtoConverter
+                .toDto(employeeService
+                        .getEmployeeByTypeOfAttendance(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), TypeOfAttendance.AT_WORK))));
     }
 
+    @Override
     @GetMapping("/date/absence")
-    public Collection<EmployeeDto> getEmployeesDateInAbsence(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(date, TypeOfAttendance.ABSENCE));
+    public ResponseEntity<List<EmployeeDto>> getEmployeesDateInAbsence(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
+        return ResponseEntity.ok(List.copyOf(employeeDtoConverter
+                .toDto(employeeService
+                        .getEmployeeByTypeOfAttendance(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), TypeOfAttendance.ABSENCE))));
     }
 
+    @Override
     @GetMapping("/date/on_sick_leave")
-    public Collection<EmployeeDto> getEmployeesDateOnSickLeave(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(date, TypeOfAttendance.ON_SICK_LEAVE));
+    public ResponseEntity<List<EmployeeDto>> getEmployeesDateOnSickLeave(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
+        return ResponseEntity.ok(List.copyOf(employeeDtoConverter
+                .toDto(employeeService
+                        .getEmployeeByTypeOfAttendance(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), TypeOfAttendance.ON_SICK_LEAVE))));
     }
 
+    @Override
     @GetMapping("/date/on_vacation")
-    public Collection<EmployeeDto> getEmployeesDateOnVacation(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        return employeeDtoConverter.toDto(employeeService.getEmployeeByTypeOfAttendance(date, TypeOfAttendance.ON_VACATION));
+    public ResponseEntity<List<EmployeeDto>> getEmployeesDateOnVacation(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
+        return ResponseEntity.ok(List.copyOf(employeeDtoConverter
+                .toDto(employeeService
+                        .getEmployeeByTypeOfAttendance(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), TypeOfAttendance.ON_VACATION))));
     }
 }
