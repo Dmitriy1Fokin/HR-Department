@@ -1,13 +1,8 @@
 package ru.fds.hrdepartment.controller;
 
 import io.swagger.api.DepApi;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fds.hrdepartment.common.converter.dto.impl.DepartmentDtoConverter;
 import ru.fds.hrdepartment.domain.Department;
@@ -15,9 +10,9 @@ import ru.fds.hrdepartment.dto.DepartmentDto;
 import ru.fds.hrdepartment.service.DepartmentService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/dep")
 public class DepartmentController implements DepApi {
 
     private final DepartmentService departmentService;
@@ -30,23 +25,22 @@ public class DepartmentController implements DepApi {
     }
 
     @Override
-    @GetMapping("/total_hour")
-    public ResponseEntity<Integer> getWorkHoursInDepartment(@RequestParam("departmentId") Long departmentId){
+    public ResponseEntity<Integer> getWorkHoursInDepartment(@NotNull @Valid Long departmentId){
         return ResponseEntity.ok(departmentService.getWorkHoursInDepartment(departmentId));
     }
 
     @Override
-    @PostMapping("/new")
-    public ResponseEntity<DepartmentDto> insertDepartment(@Valid @RequestBody DepartmentDto departmentDto){
+    public ResponseEntity<DepartmentDto> insertDepartment(@Valid DepartmentDto departmentDto){
         Department department = departmentDtoConverter.toEntity(departmentDto);
-        return ResponseEntity.ok(departmentDtoConverter.toDto(departmentService.insertDepartment(department)));
+        return new ResponseEntity<>(departmentDtoConverter.toDto(departmentService.insertDepartment(department)),
+                HttpStatus.CREATED);
     }
 
     @Override
-    @PutMapping("/update")
-    public ResponseEntity<DepartmentDto> updateDepartment(@Valid @RequestBody DepartmentDto departmentDto){
+    public ResponseEntity<DepartmentDto> updateDepartment(@Valid DepartmentDto departmentDto){
         Department department = departmentDtoConverter.toEntity(departmentDto);
-        return ResponseEntity.ok(departmentDtoConverter.toDto(departmentService.updateDepartment(department)));
+        return new ResponseEntity<>(departmentDtoConverter.toDto(departmentService.updateDepartment(department)),
+                HttpStatus.ACCEPTED);
     }
 
 }

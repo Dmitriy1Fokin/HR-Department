@@ -1,13 +1,8 @@
 package ru.fds.hrdepartment.controller;
 
 import io.swagger.api.SickApi;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fds.hrdepartment.common.converter.dto.impl.SickLeaveDtoConverter;
 import ru.fds.hrdepartment.common.exception.NotFoundException;
@@ -18,7 +13,6 @@ import ru.fds.hrdepartment.service.SickLeaveService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/sick")
 public class SickLeaveController implements SickApi {
 
     private final SickLeaveService sickLeaveService;
@@ -31,23 +25,20 @@ public class SickLeaveController implements SickApi {
     }
 
     @Override
-    @GetMapping("/{sickId}")
-    public ResponseEntity<SickLeaveDto> getSickLeave(@PathVariable("sickId") Long sickId){
+    public ResponseEntity<SickLeaveDto> getSickLeave(Long sickId){
         return ResponseEntity.ok(sickLeaveDtoConverter.toDto(sickLeaveService
                 .getSickLeave(sickId).orElseThrow(() -> new NotFoundException("Sick leave not found"))));
     }
 
     @Override
-    @PostMapping("/new")
-    public ResponseEntity<SickLeaveDto> insertSickLeave(@Valid @RequestBody SickLeaveDto sickLeaveDto){
+    public ResponseEntity<SickLeaveDto> insertSickLeave(@Valid SickLeaveDto sickLeaveDto){
         SickLeave sickLeave = sickLeaveDtoConverter.toEntity(sickLeaveDto);
-        return ResponseEntity.ok(sickLeaveDtoConverter.toDto(sickLeaveService.insertSickLeave(sickLeave)));
+        return new ResponseEntity<>(sickLeaveDtoConverter.toDto(sickLeaveService.insertSickLeave(sickLeave)), HttpStatus.CREATED);
     }
 
     @Override
-    @PutMapping("/update")
-    public ResponseEntity<SickLeaveDto> updateSickLeave(@Valid @RequestBody SickLeaveDto sickLeaveDto){
+    public ResponseEntity<SickLeaveDto> updateSickLeave(@Valid SickLeaveDto sickLeaveDto){
         SickLeave sickLeave = sickLeaveDtoConverter.toEntity(sickLeaveDto);
-        return ResponseEntity.ok(sickLeaveDtoConverter.toDto(sickLeaveService.updateSickLeave(sickLeave)));
+        return new ResponseEntity<>(sickLeaveDtoConverter.toDto(sickLeaveService.updateSickLeave(sickLeave)), HttpStatus.ACCEPTED);
     }
 }
