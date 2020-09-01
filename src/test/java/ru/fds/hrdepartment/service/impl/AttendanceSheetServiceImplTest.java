@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.fds.hrdepartment.TestUtils;
+import ru.fds.hrdepartment.common.exception.NotFoundException;
+import ru.fds.hrdepartment.dao.AttendanceSheetDao;
 import ru.fds.hrdepartment.domain.AttendanceSheet;
-import ru.fds.hrdepartment.repository.AttendanceSheetRepository;
 import ru.fds.hrdepartment.service.AttendanceSheetService;
 
 import java.util.Optional;
@@ -22,16 +23,18 @@ class AttendanceSheetServiceImplTest {
     private AttendanceSheetService attendanceSheetService;
 
     @MockBean
-    private AttendanceSheetRepository attendanceSheetRepository;
+    private AttendanceSheetDao attendanceSheetDao;
 
     @BeforeEach
     public void setUp(){
         AttendanceSheet attendanceSheet = TestUtils.getAttendanceSheet();
 
         Optional<AttendanceSheet> attendanceSheetOptional = Optional.of(attendanceSheet);
-        Mockito.when(attendanceSheetRepository.findById(Mockito.anyLong()))
+        Mockito.when(attendanceSheetDao.findById(Mockito.anyLong()))
                 .thenReturn(attendanceSheetOptional);
-        Mockito.when(attendanceSheetRepository.save(Mockito.any(AttendanceSheet.class)))
+        Mockito.when(attendanceSheetDao.save(Mockito.any(AttendanceSheet.class)))
+                .thenReturn(attendanceSheet);
+        Mockito.when(attendanceSheetDao.update(Mockito.any(AttendanceSheet.class)))
                 .thenReturn(attendanceSheet);
     }
 
@@ -40,7 +43,8 @@ class AttendanceSheetServiceImplTest {
         Optional<AttendanceSheet> attendanceSheet = attendanceSheetService
                 .getAttendance(TestUtils.getAttendanceSheet().getId());
 
-        assertEquals(TestUtils.getAttendanceSheet().getId(), attendanceSheet.get().getId());
+        attendanceSheet.ifPresentOrElse(attendanceSheet1 -> assertEquals(TestUtils.getAttendanceSheet().getId(), attendanceSheet1.getId()),
+                () -> {throw new NotFoundException("AttendanceSheet not found");});
     }
 
     @Test

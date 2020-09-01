@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.fds.hrdepartment.TestUtils;
+import ru.fds.hrdepartment.common.exception.NotFoundException;
+import ru.fds.hrdepartment.dao.AttendanceSheetDao;
+import ru.fds.hrdepartment.dao.DepartmentDao;
 import ru.fds.hrdepartment.domain.Department;
-import ru.fds.hrdepartment.repository.AttendanceSheetRepository;
-import ru.fds.hrdepartment.repository.DepartmentRepository;
 import ru.fds.hrdepartment.service.DepartmentService;
 
 import java.util.Optional;
@@ -23,20 +24,22 @@ class DepartmentServiceImplTest {
     private DepartmentService departmentService;
 
     @MockBean
-    private DepartmentRepository departmentRepository;
+    private DepartmentDao departmentDao;
     @MockBean
-    private AttendanceSheetRepository attendanceSheetRepository;
+    private AttendanceSheetDao attendanceSheetDao;
 
 
     @BeforeEach
     void setUp() {
         Department department = TestUtils.getDepartment();
 
-        Mockito.when(departmentRepository.findById(Mockito.anyLong()))
+        Mockito.when(departmentDao.findById(Mockito.anyLong()))
                 .thenReturn(Optional.of(department));
-        Mockito.when(attendanceSheetRepository.getWorkHoursInDepartment(Mockito.any(Department.class)))
+        Mockito.when(attendanceSheetDao.getWorkHoursInDepartment(Mockito.any(Department.class)))
                 .thenReturn(1);
-        Mockito.when(departmentRepository.save(Mockito.any(Department.class)))
+        Mockito.when(departmentDao.save(Mockito.any(Department.class)))
+                .thenReturn(department);
+        Mockito.when(departmentDao.update(Mockito.any(Department.class)))
                 .thenReturn(department);
     }
 
@@ -44,7 +47,8 @@ class DepartmentServiceImplTest {
     void getDepartment() {
         Optional<Department> department = departmentService.getDepartment(1L);
 
-        assertEquals(TestUtils.getAttendanceSheet().getId(), department.get().getId());
+        department.ifPresentOrElse(department1 -> assertEquals(TestUtils.getAttendanceSheet().getId(), department1.getId()),
+                () -> {throw new NotFoundException("Department not found");});
     }
 
     @Test

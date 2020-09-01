@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.fds.hrdepartment.TestUtils;
+import ru.fds.hrdepartment.common.exception.NotFoundException;
+import ru.fds.hrdepartment.dao.EmployeeDao;
 import ru.fds.hrdepartment.domain.Employee;
-import ru.fds.hrdepartment.repository.EmployeeRepository;
 import ru.fds.hrdepartment.service.EmployeeService;
 
 import java.util.Collection;
@@ -23,19 +24,21 @@ class EmployeeServiceImplTest {
     private EmployeeService employeeService;
 
     @MockBean
-    private EmployeeRepository employeeRepository;
+    private EmployeeDao employeeDao;
 
     @BeforeEach
     void setUp() {
         Employee employee = TestUtils.getEmployee1();
 
-        Mockito.when(employeeRepository.findById(Mockito.anyLong()))
+        Mockito.when(employeeDao.findById(Mockito.anyLong()))
                 .thenReturn(Optional.of(employee));
-        Mockito.when(employeeRepository.getWorkDaysByEmployee(Mockito.anyLong()))
+        Mockito.when(employeeDao.getWorkDaysByEmployee(Mockito.anyLong()))
                 .thenReturn(1);
-        Mockito.when(employeeRepository.save(Mockito.any(Employee.class)))
+        Mockito.when(employeeDao.save(Mockito.any(Employee.class)))
                 .thenReturn(employee);
-        Mockito.when(employeeRepository.getEmployeeByTypeOfAttendance(Mockito.any(), Mockito.any()))
+        Mockito.when(employeeDao.update(Mockito.any(Employee.class)))
+                .thenReturn(employee);
+        Mockito.when(employeeDao.getEmployeeByTypeOfAttendance(Mockito.any(), Mockito.any()))
                 .thenReturn(TestUtils.getEmployees());
     }
 
@@ -44,7 +47,8 @@ class EmployeeServiceImplTest {
     void getEmployee() {
         Optional<Employee> employee = employeeService.getEmployee(Mockito.anyLong());
 
-        assertEquals(TestUtils.getEmployee1().getId(), employee.get().getId());
+        employee.ifPresentOrElse(employee1 -> assertEquals(TestUtils.getEmployee1().getId(),employee1.getId()),
+                () -> {throw new NotFoundException("Employee not found");});
     }
 
     @Test

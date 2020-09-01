@@ -1,14 +1,13 @@
 package ru.fds.hrdepartment.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fds.hrdepartment.common.exception.ConditionFailException;
+import ru.fds.hrdepartment.dao.EmployeeDao;
+import ru.fds.hrdepartment.dao.VacationDao;
 import ru.fds.hrdepartment.domain.Employee;
 import ru.fds.hrdepartment.domain.Vacation;
-import ru.fds.hrdepartment.repository.EmployeeRepository;
-import ru.fds.hrdepartment.repository.VacationRepository;
 import ru.fds.hrdepartment.service.VacationService;
 
 import java.time.LocalDate;
@@ -19,30 +18,30 @@ import java.util.Optional;
 @Service
 public class VacationServiceImpl implements VacationService {
 
-    private final VacationRepository vacationRepository;
-    private final EmployeeRepository employeeRepository;
+    private final VacationDao vacationDao;
+    private final EmployeeDao employeeDao;
 
-    public VacationServiceImpl(VacationRepository vacationRepository,
-                               EmployeeRepository employeeRepository) {
-        this.vacationRepository = vacationRepository;
-        this.employeeRepository = employeeRepository;
+    public VacationServiceImpl(VacationDao vacationDao,
+                               EmployeeDao employeeDao) {
+        this.vacationDao = vacationDao;
+        this.employeeDao = employeeDao;
     }
 
     @Override
     public Optional<Vacation> getVacation(Long vacationId) {
         log.debug("getVacation. vacationId: {}", vacationId);
-        return vacationRepository.findById(vacationId);
+        return vacationDao.findById(vacationId);
     }
 
     @Override
     @Transactional
     public Vacation insertVacation(Vacation vacation) {
-        Collection<Employee> employees = employeeRepository
+        Collection<Employee> employees = employeeDao
                 .findAllByDepartmentAndPosition(vacation.getEmployee().getDepartment(),
                         vacation.getEmployee().getPosition());
 
         if(isCanLeaveInVacation(employees)){
-            vacation = vacationRepository.save(vacation);
+            vacation = vacationDao.save(vacation);
             log.info("insertVacation. vacation: {}", vacation);
             return vacation;
         }else{
@@ -54,7 +53,7 @@ public class VacationServiceImpl implements VacationService {
         if(employeesInDepartmentInThisPosition.size() < 2){
             return false;
         }else{
-            int countEmp = employeeRepository.countOfEmployeesInVacation(employeesInDepartmentInThisPosition, LocalDate.now());
+            int countEmp = employeeDao.countOfEmployeesInVacation(employeesInDepartmentInThisPosition, LocalDate.now());
             return employeesInDepartmentInThisPosition.size() - countEmp >= 2;
         }
     }
@@ -62,7 +61,7 @@ public class VacationServiceImpl implements VacationService {
     @Override
     @Transactional
     public Vacation updateVacation(Vacation vacation) {
-        vacation = vacationRepository.save(vacation);
+        vacation = vacationDao.update(vacation);
         log.info("updateVacation. vacation: {}", vacation);
         return vacation;
     }
@@ -71,9 +70,8 @@ public class VacationServiceImpl implements VacationService {
     public Optional<Vacation> getLastVacationByEmployee(Long employeeId) {
         log.debug("getLastVacationByEmployee. employeeId: {}", employeeId);
 
-        Optional<Vacation> vacation = employeeRepository.findById(employeeId)
-                .flatMap(employee -> vacationRepository
-                        .findFirstByEmployee(employee, Sort.by(Sort.Direction.DESC, "dateStart")));
+        Optional<Vacation> vacation = employeeDao.findById(employeeId)
+                .flatMap(vacationDao::findLastVacationByEmployee);
 
         log.debug("getLastVacationByEmployee. vacation: {}", vacation);
 

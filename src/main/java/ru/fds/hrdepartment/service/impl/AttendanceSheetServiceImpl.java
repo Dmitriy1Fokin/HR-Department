@@ -3,8 +3,8 @@ package ru.fds.hrdepartment.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.fds.hrdepartment.dao.AttendanceSheetDao;
 import ru.fds.hrdepartment.domain.AttendanceSheet;
-import ru.fds.hrdepartment.repository.AttendanceSheetRepository;
 import ru.fds.hrdepartment.service.AttendanceSheetService;
 
 import java.util.Optional;
@@ -13,22 +13,22 @@ import java.util.Optional;
 @Service
 public class AttendanceSheetServiceImpl implements AttendanceSheetService {
 
-    private final AttendanceSheetRepository attendanceSheetRepository;
+    private final AttendanceSheetDao attendanceSheetDao;
 
-    public AttendanceSheetServiceImpl(AttendanceSheetRepository attendanceSheetRepository) {
-        this.attendanceSheetRepository = attendanceSheetRepository;
+    public AttendanceSheetServiceImpl(AttendanceSheetDao attendanceSheetDao) {
+        this.attendanceSheetDao = attendanceSheetDao;
     }
 
     @Override
     public Optional<AttendanceSheet> getAttendance(Long attendanceId) {
         log.debug("getAttendance. attendanceId: {}", attendanceId);
-        return attendanceSheetRepository.findById(attendanceId);
+        return attendanceSheetDao.findById(attendanceId);
     }
 
     @Override
     @Transactional
     public AttendanceSheet insertAttendanceSheet(AttendanceSheet attendanceSheet) {
-        attendanceSheet = attendanceSheetRepository.save(attendanceSheet);
+        attendanceSheet = attendanceSheetDao.save(attendanceSheet);
         log.info("insert attendanceSheet = {}", attendanceSheet);
         return attendanceSheet;
     }
@@ -36,7 +36,7 @@ public class AttendanceSheetServiceImpl implements AttendanceSheetService {
     @Override
     @Transactional
     public AttendanceSheet updateAttendanceSheet(AttendanceSheet attendanceSheet) {
-        attendanceSheet = attendanceSheetRepository.save(attendanceSheet);
+        attendanceSheet = attendanceSheetDao.update(attendanceSheet);
         log.info("update attendanceSheet = {}", attendanceSheet);
         return attendanceSheet;
     }
