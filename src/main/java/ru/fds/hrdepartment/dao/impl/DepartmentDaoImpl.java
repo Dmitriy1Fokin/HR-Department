@@ -11,15 +11,15 @@ import java.util.Optional;
 @Component
 public class DepartmentDaoImpl implements DepartmentDao {
 
+    private final EntityManager entityManager = HiberUtils.getEntityManager();
+
     @Override
     public Optional<Department> findById(Long departmentId){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return Optional.ofNullable(entityManager.find(Department.class, departmentId));
     }
 
     @Override
     public Department save(Department department){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(department);
         entityManager.getTransaction().commit();
@@ -28,7 +28,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
 
     @Override
     public Department update(Department department){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.merge(department);
         entityManager.getTransaction().commit();

@@ -14,15 +14,15 @@ import java.util.Optional;
 @Component
 public class AttendanceSheetDaoImpl implements AttendanceSheetDao {
 
+    private final EntityManager entityManager = HiberUtils.getEntityManager();
+
     @Override
     public Optional<AttendanceSheet> findById(Long attendanceId){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return Optional.ofNullable(entityManager.find(AttendanceSheet.class, attendanceId));
     }
 
     @Override
     public List<AttendanceSheet> findAllByEmployee(Employee employee){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return entityManager
                 .createQuery("select asheet from AttendanceSheet asheet where asheet.employee = :employee", AttendanceSheet.class)
                 .setParameter("employee", employee)
@@ -31,7 +31,6 @@ public class AttendanceSheetDaoImpl implements AttendanceSheetDao {
 
     @Override
     public Integer getWorkHoursInDepartment(Department department){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         Long hours = (Long) entityManager
                 .createQuery("select sum(asheet.hourAtWork) from AttendanceSheet asheet where asheet.employee.department = :department")
                 .setParameter("department", department)
@@ -41,7 +40,6 @@ public class AttendanceSheetDaoImpl implements AttendanceSheetDao {
 
     @Override
     public AttendanceSheet save(AttendanceSheet attendanceSheet){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(attendanceSheet);
         entityManager.getTransaction().commit();
@@ -50,7 +48,6 @@ public class AttendanceSheetDaoImpl implements AttendanceSheetDao {
 
     @Override
     public AttendanceSheet update(AttendanceSheet attendanceSheet){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.merge(attendanceSheet);
         entityManager.getTransaction().commit();
@@ -59,7 +56,6 @@ public class AttendanceSheetDaoImpl implements AttendanceSheetDao {
 
     @Override
     public void deleteAllByEmployee(Employee employee){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager
                 .createQuery("select asheet from AttendanceSheet asheet where asheet.employee = :employee", AttendanceSheet.class)

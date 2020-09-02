@@ -18,15 +18,15 @@ import java.util.Optional;
 @Component
 public class EmployeeDaoImpl implements EmployeeDao {
 
+    private final EntityManager entityManager = HiberUtils.getEntityManager();
+
     @Override
     public Optional<Employee> findById(Long employeeId){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return Optional.ofNullable(entityManager.find(Employee.class, employeeId));
     }
 
     @Override
     public Integer getWorkDaysByEmployee(Long employeeId){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         Long days = (Long) entityManager
                 .createQuery("select count(asheet) " +
                         "from AttendanceSheet asheet " +
@@ -38,7 +38,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public List<Employee> getEmployeeByTypeOfAttendance(LocalDate date, TypeOfAttendance typeOfAttendance){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return entityManager
                 .createQuery("select asheet.employee " +
                         "from AttendanceSheet asheet " +
@@ -50,7 +49,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public List<Employee> findAllByDepartmentAndPosition(Department department, Position position){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return entityManager
                 .createQuery("select emp " +
                         "from Employee emp " +
@@ -62,7 +60,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Integer countOfSickEmployees(Collection<Employee> employees, LocalDate dateEnd){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         Long days = (Long) entityManager
                 .createQuery("select count(sl) " +
                         "from SickLeave sl " +
@@ -75,7 +72,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Integer countOfEmployeesInVacation(Collection<Employee> employees, LocalDate date){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         Long days = (Long) entityManager
                 .createQuery("select count(v) " +
                         "from Vacation v " +
@@ -89,7 +85,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Employee save(Employee employee){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(employee);
         entityManager.getTransaction().commit();
@@ -98,7 +93,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Employee update(Employee employee){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.merge(employee);
         entityManager.getTransaction().commit();
@@ -107,7 +101,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public void delete(Long employeeId){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
 
         Employee employee = entityManager.find(Employee.class, employeeId);

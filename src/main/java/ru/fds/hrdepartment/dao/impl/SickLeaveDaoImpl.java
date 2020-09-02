@@ -13,15 +13,15 @@ import java.util.Optional;
 @Component
 public class SickLeaveDaoImpl implements SickLeaveDao {
 
+    private final EntityManager entityManager = HiberUtils.getEntityManager();
+
     @Override
     public Optional<SickLeave> findById(Long sickLeaveId){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return Optional.ofNullable(entityManager.find(SickLeave.class, sickLeaveId));
     }
 
     @Override
     public List<SickLeave> findAllByEmployee(Employee employee){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return entityManager
                 .createQuery("select sl from SickLeave sl where sl.employee = :employee", SickLeave.class)
                 .setParameter("employee", employee)
@@ -30,7 +30,6 @@ public class SickLeaveDaoImpl implements SickLeaveDao {
 
     @Override
     public SickLeave save(SickLeave sickLeave){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(sickLeave);
         entityManager.getTransaction().commit();
@@ -39,7 +38,6 @@ public class SickLeaveDaoImpl implements SickLeaveDao {
 
     @Override
     public SickLeave update(SickLeave sickLeave){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.merge(sickLeave);
         entityManager.getTransaction().commit();
@@ -48,7 +46,6 @@ public class SickLeaveDaoImpl implements SickLeaveDao {
 
     @Override
     public void deleteAllByEmployee(Employee employee){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager
                 .createQuery("select sl from SickLeave sl where sl.employee = :employee", SickLeave.class)

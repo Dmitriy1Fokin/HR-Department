@@ -13,17 +13,16 @@ import java.util.Optional;
 @Component
 public class VacationDaoImpl implements VacationDao {
 
+    private final EntityManager entityManager = HiberUtils.getEntityManager();
     private static final String PARAMETER_EMP = "employee";
 
     @Override
     public Optional<Vacation> findById(Long vacationId){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return Optional.ofNullable(entityManager.find(Vacation.class, vacationId));
     }
 
     @Override
     public List<Vacation> findAllByEmployee(Employee employee){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         return entityManager
                 .createQuery("select v from Vacation v where v.employee = :employee", Vacation.class)
                 .setParameter(PARAMETER_EMP, employee)
@@ -32,7 +31,6 @@ public class VacationDaoImpl implements VacationDao {
 
     @Override
     public Optional<Vacation> findLastVacationByEmployee(Employee employee){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         List<Vacation> vacations = entityManager
                 .createQuery("select v from Vacation v where v.employee = :employee order by v.dateStart desc ", Vacation.class)
                 .setParameter(PARAMETER_EMP, employee)
@@ -44,7 +42,6 @@ public class VacationDaoImpl implements VacationDao {
 
     @Override
     public Vacation save(Vacation vacation){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(vacation);
         entityManager.getTransaction().commit();
@@ -53,7 +50,6 @@ public class VacationDaoImpl implements VacationDao {
 
     @Override
     public Vacation update(Vacation vacation){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.merge(vacation);
         entityManager.getTransaction().commit();
@@ -62,7 +58,6 @@ public class VacationDaoImpl implements VacationDao {
 
     @Override
     public void deleteAllByEmployee(Employee employee){
-        EntityManager entityManager = HiberUtils.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
         entityManager
                 .createQuery("select v from Vacation v where v.employee = :employee", Vacation.class)
