@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-08-29T00:16:51.113+06:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-09-11T10:14:57.918+03:00")
 
 @Api(value = "attendance", description = "the attendance API")
 public interface AttendanceApi {
@@ -36,6 +36,18 @@ public interface AttendanceApi {
         produces = { "*/*" }, 
         method = RequestMethod.GET)
     ResponseEntity<AttendanceSheetDto> getAttendance(@ApiParam(value = "attendanceId",required=true) @PathVariable("attendanceId") Long attendanceId);
+
+
+    @ApiOperation(value = "get attendance by employee id", nickname = "getAttendanceByEmployee", notes = "", response = AttendanceSheetDto.class, responseContainer = "List", tags={ "attendanceSheetController", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "OK", response = AttendanceSheetDto.class, responseContainer = "List"),
+        @ApiResponse(code = 401, message = "Unauthorized"),
+        @ApiResponse(code = 403, message = "Forbidden"),
+        @ApiResponse(code = 404, message = "Not Found") })
+    @RequestMapping(value = "/attendance/emp/{employeeId}",
+        produces = { "*/*" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<List<AttendanceSheetDto>> getAttendanceByEmployee(@ApiParam(value = "employeeId",required=true) @PathVariable("employeeId") Long employeeId);
 
 
     @ApiOperation(value = "insert new attendance", nickname = "insertAttendance", notes = "", response = AttendanceSheetDto.class, tags={ "attendanceSheetController", })
